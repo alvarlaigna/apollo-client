@@ -24,7 +24,7 @@ import {
 } from './queries/store';
 
 import {
-  mutations,
+  // mutations,
   MutationStore,
 } from './mutations/store';
 
@@ -62,7 +62,6 @@ export interface ReducerError {
 export interface Store {
   data: NormalizedCache;
   queries: QueryStore;
-  mutations: MutationStore;
   optimistic: OptimisticStore;
   reducerError: ReducerError | null;
 }
@@ -110,7 +109,6 @@ export function createApolloReducer(config: ApolloReducerConfig): (state: Store,
     try {
       const newState: Store = {
         queries: queries(state.queries, action),
-        mutations: mutations(state.mutations, action),
 
         data: data(state.data, action, config),
         optimistic: [] as any,
@@ -134,7 +132,6 @@ export function createApolloReducer(config: ApolloReducerConfig): (state: Store,
       );
 
       if (state.data === newState.data &&
-      state.mutations === newState.mutations &&
       state.queries === newState.queries &&
       state.optimistic === newState.optimistic &&
       state.reducerError === newState.reducerError) {

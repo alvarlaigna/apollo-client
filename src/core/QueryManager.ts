@@ -104,6 +104,10 @@ import {
 } from '../data/mutationResults';
 
 import {
+  MutationStore,
+} from '../mutations/store';
+
+import {
   QueryScheduler,
 } from '../scheduler/scheduler';
 
@@ -137,6 +141,7 @@ export class QueryManager {
   public store: ApolloStore;
   public networkInterface: NetworkInterface;
   public ssrMode: boolean;
+  public mutationStore: MutationStore = {};
 
   private addTypename: boolean;
   private deduplicator: Deduplicator;
@@ -309,6 +314,13 @@ export class QueryManager {
       update: updateWithProxyFn,
     });
 
+    this.mutationStore[mutationId] = {
+      mutationString: mutationString,
+      variables: variables || {},
+      loading: true,
+      error: null,
+    };
+
     return new Promise<ExecutionResult>((resolve, reject) => {
       this.networkInterface.query(request)
         .then((result) => {
@@ -321,6 +333,9 @@ export class QueryManager {
               error,
               mutationId,
             });
+
+            this.mutationStore[mutationId].loading = false;
+            this.mutationStore[mutationId].error = error;
 
             delete this.queryDocuments[mutationId];
             reject(error);
@@ -338,6 +353,9 @@ export class QueryManager {
             updateQueries: updateQueries(),
             update: updateWithProxyFn,
           });
+
+          this.mutationStore[mutationId].loading = false;
+          this.mutationStore[mutationId].error = null;
 
           // If there was an error in our reducers, reject this promise!
           const { reducerError } = this.getApolloState();
@@ -831,6 +849,8 @@ export class QueryManager {
       type: 'APOLLO_STORE_RESET',
       observableQueryIds: Object.keys(this.observableQueries),
     });
+
+    this.mutationStore = {};
 
     // Similarly, we have to have to refetch each of the queries currently being
     // observed. We refetch instead of error'ing on these since the assumption is that

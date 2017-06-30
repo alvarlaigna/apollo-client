@@ -318,7 +318,7 @@ describe('optimistic mutation results', () => {
             updateQueries,
           }).then((res) => {
             checkBothMutationsAreApplied('This one was created with a mutation.', 'Optimistically generated 2');
-            const mutationsState = client.store.getState().apollo.mutations;
+            const mutationsState = client.queryManager.mutationStore;
             assert.equal(mutationsState['5'].loading, false);
             assert.equal(mutationsState['6'].loading, true);
 
@@ -331,14 +331,14 @@ describe('optimistic mutation results', () => {
             updateQueries,
           }).then((res) => {
             checkBothMutationsAreApplied('This one was created with a mutation.', 'Second mutation.');
-            const mutationsState = client.store.getState().apollo.mutations;
+            const mutationsState = client.queryManager.mutationStore;
             assert.equal(mutationsState[5].loading, false);
             assert.equal(mutationsState[6].loading, false);
 
             return res;
           });
 
-          const mutationsState = client.store.getState().apollo.mutations;
+          const mutationsState = client.queryManager.mutationStore;
           assert.equal(mutationsState[5].loading, true);
           assert.equal(mutationsState[6].loading, true);
 
@@ -486,7 +486,7 @@ describe('optimistic mutation results', () => {
             update,
           }).then((res) => {
             checkBothMutationsAreApplied('This one was created with a mutation.', 'Optimistically generated 2');
-            const mutationsState = client.store.getState().apollo.mutations;
+            const mutationsState = client.queryManager.mutationStore;
             assert.equal(mutationsState['5'].loading, false);
             assert.equal(mutationsState['6'].loading, true);
 
@@ -499,14 +499,14 @@ describe('optimistic mutation results', () => {
             update,
           }).then((res) => {
             checkBothMutationsAreApplied('This one was created with a mutation.', 'Second mutation.');
-            const mutationsState = client.store.getState().apollo.mutations;
+            const mutationsState = client.queryManager.mutationStore;
             assert.equal(mutationsState[5].loading, false);
             assert.equal(mutationsState[6].loading, false);
 
             return res;
           });
 
-          const mutationsState = client.store.getState().apollo.mutations;
+          const mutationsState = client.queryManager.mutationStore;
           assert.equal(mutationsState[5].loading, true);
           assert.equal(mutationsState[6].loading, true);
 

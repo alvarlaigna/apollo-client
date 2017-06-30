@@ -114,7 +114,7 @@ export function createApolloReducer(config: ApolloReducerConfig): (state: Store,
 
         // Note that we are passing the queries into this, because it reads them to associate
         // the query ID in the result with the actual query
-        data: data(state.data, action, state.queries, state.mutations, config),
+        data: data(state.data, action, state.mutations, config),
         optimistic: [] as any,
 
         reducerError: null,

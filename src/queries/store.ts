@@ -35,7 +35,6 @@ export type QueryStoreValue = {
   networkStatus: NetworkStatus;
   networkError: Error | null;
   graphQLErrors: GraphQLError[];
-  lastRequestId: number;
   metadata: any;
 };
 
@@ -101,7 +100,6 @@ export function queries(
       networkError: null,
       graphQLErrors: [],
       networkStatus: newNetworkStatus,
-      lastRequestId: action.requestId,
       metadata: action.metadata,
     };
 
@@ -132,7 +130,7 @@ export function queries(
     }
 
     // Ignore results from old requests
-    if (action.requestId < previousState[action.queryId].lastRequestId) {
+    if (action.requestId < action.lastRequestId) {
       return previousState;
     }
 
@@ -164,7 +162,7 @@ export function queries(
     }
 
     // Ignore results from old requests
-    if (action.requestId < previousState[action.queryId].lastRequestId) {
+    if (action.requestId < action.lastRequestId) {
       return previousState;
     }
 

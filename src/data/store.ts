@@ -53,7 +53,6 @@ import {
 export function data(
   previousState: NormalizedCache = {},
   action: ApolloAction,
-  mutations: MutationStore,
   config: ApolloReducerConfig,
 ): NormalizedCache {
   // XXX This is hopefully a temporary binding to get around
@@ -129,8 +128,6 @@ export function data(
   } else if (isMutationResultAction(constAction)) {
     // Incorporate the result from this mutation into the store
     if (!constAction.result.errors) {
-      const queryStoreValue = mutations[constAction.mutationId];
-
       // XXX use immutablejs instead of cloning
       const clonedState = { ...previousState } as NormalizedCache;
 
@@ -138,7 +135,7 @@ export function data(
         result: constAction.result.data,
         dataId: 'ROOT_MUTATION',
         document: constAction.document,
-        variables: queryStoreValue.variables,
+        variables: constAction.variables,
         store: clonedState,
         dataIdFromObject: config.dataIdFromObject,
         fragmentMatcherFunction: config.fragmentMatcher,
@@ -200,7 +197,6 @@ export function data(
         newState = data(
           newState,
           { type: 'APOLLO_WRITE', writes },
-          mutations,
           config,
         );
       }
